@@ -36,18 +36,18 @@
     </v-container>
 
     <options>
-      <option-block title="Method">
+      <option-block title="Type">
         <v-select
-          v-model="method"
-          :items="methods"
+          v-model="type"
+          :items="types"
           filled
           dense
         />
       </option-block>
 
-      <option-block title="Path">
+      <option-block title="Route">
         <v-text-field
-          v-model="path"
+          v-model="route"
           filled
           dense
           clearable
@@ -65,7 +65,7 @@
         />
 
         <v-select
-          v-model="controllerMethod"
+          v-model="method"
           :items="$store.state.controller.methods"
           label="Method"
           filled
@@ -91,11 +91,11 @@ import clipboard from 'copy-to-clipboard'
 export default {
   data() {
     return {
-      method: 'get',
-      methods: ['get', 'post', 'put', 'patch', 'delete', 'options'],
-      path: '/path',
+      type: 'get',
+      types: ['get', 'post', 'put', 'patch', 'delete', 'options', 'resource', 'group'],
+      route: '/path',
       controller: '',
-      controllerMethod: '',
+      method: '',
       controllerAndMethod: '',
     }
   },
