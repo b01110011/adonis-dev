@@ -124,13 +124,24 @@
 
       <option-block v-if="!isResource" :title="`${isGroup ? 'Group' : 'Route'} Name`">
         <v-text-field
-          v-model="routeName"
+          v-model="name"
           placeholder="Name"
           filled
           dense
           clearable
         />
       </option-block>
+
+      <div class="d-flex">
+        <v-spacer />
+
+        <v-btn
+          color="info"
+          @click="reset"
+        >
+          Reset
+        </v-btn>
+      </div>
     </options>
   </div>
 </template>
@@ -215,6 +226,18 @@ export default {
   methods: {
     copy() {
       clipboard(this.code)
+    },
+    reset() {
+      this.type = 'get'
+      this.route = '/path'
+      this.controller = ''
+      this.method = ''
+      this.controllerAndMethod = ''
+      this.apiOnly = false
+      this.except = []
+      this.only = []
+      this.prefix = ''
+      this.name = ''
     },
   },
 }
