@@ -45,7 +45,7 @@
         />
       </option-block>
 
-      <option-block title="Route">
+      <option-block v-if="!isGroup" title="Route">
         <v-text-field
           v-model="route"
           filled
@@ -54,7 +54,7 @@
         />
       </option-block>
 
-      <option-block title="Handler">
+      <option-block v-if="!isGroup" title="Handler">
         <v-select
           v-model="controller"
           :items="$store.state.controller.controllers"
@@ -65,6 +65,7 @@
         />
 
         <v-select
+          v-if="!isResource"
           v-model="method"
           :items="$store.state.controller.methods"
           label="Method"
@@ -76,6 +77,44 @@
         <v-text-field
           v-model="controllerAndMethod"
           label="Or as string"
+          filled
+          dense
+          clearable
+        />
+      </option-block>
+
+      <option-block v-if="isResource">
+        <v-checkbox
+          class="ml-2 mt-0"
+          v-model="apiOnly"
+          label="Api Only"
+          dense
+        />
+
+        <v-select
+          v-model="except"
+          :items="resourceMethods"
+          label="Except"
+          filled
+          dense
+          multiple
+          clearable
+        />
+
+        <v-select
+          v-model="only"
+          :items="resourceMethods"
+          label="Only"
+          filled
+          dense
+          multiple
+          clearable
+        />
+      </option-block>
+
+      <option-block v-if="isGroup" title="Prefix">
+        <v-text-field
+          v-model="prefix"
           filled
           dense
           clearable
@@ -97,21 +136,63 @@ export default {
       controller: '',
       method: '',
       controllerAndMethod: '',
+      apiOnly: false,
+      except: [],
+      only: [],
+      resourceMethods: ['index', 'create', 'store', 'show', 'edit', 'update', 'destroy'],
+      prefix: '',
     }
   },
   computed: {
     code() {
-      let code = `Route.${this.method}('${this.path || ''}'`
+      // type
+      let code = `Route\n\t.${this.type}(`
 
-      if (this.controllerAndMethod) {
-        code += `, '${this.controllerAndMethod}'`
-      } else if (this.controller) {
-        code += `, '${this.controller}.${this.controllerMethod || ''}'`
+      // group
+      if (this.isGroup) {
+        code += `() => {\n\t\t\n\t})`
+
+        // prefix
+        if (this.prefix)
+          code += `\n\t.prefix('${this.prefix || ''}')`
+      } else {
+        code += `'${this.route || ''}'`
+
+        if (this.controllerAndMethod) {
+          code += `, '${this.controllerAndMethod}'`
+        } else if (this.controller) {
+          code += `, '${this.controller}`
+
+          if (!this.isResource)
+            code += `.${this.method || ''}`
+
+          code += `'`
+        }
+
+        code += `)`
+        
+        if (this.isResource) {
+          // apiOnly
+          if (this.apiOnly)
+            code += '\n\t.apiOnly()'
+
+          // except
+          if (this.except.length)
+            code += `\n\t.except(['${this.except.join(`', '`)}'])`
+          
+          // only
+          if (this.only.length)
+            code += `\n\t.only(['${this.only.join(`', '`)}'])`
+        }
       }
 
-      code += `)`
-
       return code
+    },
+    isResource() {
+      return this.type === 'resource'
+    },
+    isGroup() {
+      return this.type === 'group'
     },
   },
   methods: {

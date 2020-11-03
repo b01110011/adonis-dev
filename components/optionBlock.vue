@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="title mb-2">{{ title }}</div>
+    <div v-if="title" class="title mb-2">{{ title }}</div>
 
     <slot></slot>
   </div>
