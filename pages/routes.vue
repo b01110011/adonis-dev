@@ -48,6 +48,7 @@
       <option-block v-if="!isGroup" title="Route">
         <v-text-field
           v-model="route"
+          placeholder="Path"
           filled
           dense
           clearable
@@ -120,6 +121,16 @@
           clearable
         />
       </option-block>
+
+      <option-block v-if="!isResource" :title="`${isGroup ? 'Group' : 'Route'} Name`">
+        <v-text-field
+          v-model="routeName"
+          placeholder="Name"
+          filled
+          dense
+          clearable
+        />
+      </option-block>
     </options>
   </div>
 </template>
@@ -141,6 +152,7 @@ export default {
       only: [],
       resourceMethods: ['index', 'create', 'store', 'show', 'edit', 'update', 'destroy'],
       prefix: '',
+      name: '',
     }
   },
   computed: {
@@ -184,6 +196,11 @@ export default {
           if (this.only.length)
             code += `\n\t.only(['${this.only.join(`', '`)}'])`
         }
+      }
+
+      // route/group name
+      if (!this.isResource && this.name) {
+        code += `\n\t.as('${this.name || ''}')`
       }
 
       return code
