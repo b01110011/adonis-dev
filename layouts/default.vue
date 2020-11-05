@@ -6,7 +6,7 @@
       clipped-right
     >
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>AdoNuxt</v-toolbar-title>
+      <v-toolbar-title>Adonis Dev</v-toolbar-title>
 
       <v-spacer />
 
